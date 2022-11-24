@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "oI/d479UWeVhhCm9BVelZsBFXjIHrTFatvfKrJkViQQynaSHTxA5N31CtN4XaFqFeIWmNNjRyk6clj1KUXahFg==",
+  "success": true,
+  "projectFilePath": "/Users/amiralimov/Programming/computer-science-modelling/book/formatMethods/formatMethods.fsproj",
+  "expectedPackageFiles": [
+    "/Users/amiralimov/.nuget/packages/fsharp.core/6.0.5/fsharp.core.6.0.5.nupkg.sha512"
+  ],
+  "logs": []
+}
