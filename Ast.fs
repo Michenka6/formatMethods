@@ -35,7 +35,7 @@ type Bexpr =
 type Act =
     | Ass of string * Aexpr
     | ArrAss of string * Aexpr * Aexpr
-    | Pred of Bexpr
+    | Predicate of Bexpr
     | DoNothing
 
 type E = Edge of Q * Act * Q
@@ -75,5 +75,29 @@ and Command =
     | If of GuardCommand
     | Do of GuardCommand
     | Skip
-    | Break
-    | Continue
+
+type Pred =
+    | F of bool
+    | Conjuntion of Pred * Pred
+    | Disjunction of Pred * Pred
+    | Neg of Pred
+    | Constraint of Pred * Pred
+    | Exists of string * Pred
+    | Forall of string * Pred
+    | Equality of Expr * Expr
+    | PredMap of (Expr list -> bool) * Expr list
+
+and Expr =
+    | Concrete of string
+    | Virtual of string
+    | AddExpr of Expr * Expr
+    | SubExpr of Expr * Expr
+    | TimesExpr of Expr * Expr
+    | DivExpr of Expr * Expr
+    | Map of (Expr list -> int) * Expr list
+
+type VirtualMemory = Map<string, int>
+
+type Define = Memory -> VirtualMemory -> Pred -> bool
+
+type P = Q -> Pred

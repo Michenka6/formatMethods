@@ -26,3 +26,4 @@
 /Users/amiralimov/Programming/computer-science-modelling/book/formatMethods/obj/Debug/net6.0/formatMethods.xml
 /Users/amiralimov/Programming/computer-science-modelling/book/formatMethods/obj/Debug/net6.0/formatMethods.pdb
 /Users/amiralimov/Programming/computer-science-modelling/book/formatMethods/obj/Debug/net6.0/formatMethods.genruntimeconfig.cache
+/Users/amiralimov/Programming/computer-science-modelling/book/formatMethods/bin/Debug/net6.0/FsLexYacc.Runtime.dll

@@ -6,13 +6,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Ast.fs" />
+    <Compile Include="Parser.fs" />
+    <Compile Include="Lexer.fs" />
     <Compile Include="Utils.fs" />
+    <Compile Include="Input.fs" />
     <Compile Include="Eval.fs" />
     <Compile Include="Show.fs" />
     <Compile Include="Chapter_1.fs" />
     <Compile Include="Chapter_2.fs" />
     <Compile Include="Chapter_3.fs" />
-    <Compile Include="Functions.fs" />
     <Compile Include="Main.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FsLexYacc" Version="10.0.0" />
   </ItemGroup>
 </Project>

@@ -8,7 +8,8 @@
     ".NETCoreApp,Version=v6.0": {
       "formatMethods/1.0.0": {
         "dependencies": {
-          "FSharp.Core": "6.0.5"
+          "FSharp.Core": "6.0.5",
+          "FsLexYacc": "10.0.0"
         },
         "runtime": {
           "formatMethods.dll": {}
@@ -62,6 +63,23 @@
             "locale": "zh-Hant"
           }
         }
+      },
+      "FsLexYacc/10.0.0": {
+        "dependencies": {
+          "FSharp.Core": "6.0.5",
+          "FsLexYacc.Runtime": "10.0.0"
+        }
+      },
+      "FsLexYacc.Runtime/10.0.0": {
+        "dependencies": {
+          "FSharp.Core": "6.0.5"
+        },
+        "runtime": {
+          "lib/netstandard2.0/FsLexYacc.Runtime.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "10.0.0.0"
+          }
+        }
       }
     }
   },
@@ -77,6 +95,20 @@
       "sha512": "sha512-FwdQVtpj34xt8vKyFUUeNIS+obWlEnSrSW7y1ivRVts/ZsrUsKyOd0bZehgFhWdnB/NBsa9DCWvNFMTO0XDFcg==",
       "path": "fsharp.core/6.0.5",
       "hashPath": "fsharp.core.6.0.5.nupkg.sha512"
+    },
+    "FsLexYacc/10.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-YIaA8wBIrl2EzMPN3VqoaPo5K1+xTmROIUejTDrxqDdBkcNu145UBUhVchMiAWQda6NS5esJIX2Jh83ChKJzzA==",
+      "path": "fslexyacc/10.0.0",
+      "hashPath": "fslexyacc.10.0.0.nupkg.sha512"
+    },
+    "FsLexYacc.Runtime/10.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-dqieKjfd84tOwlT2C7Bk8Y/otGVfYlVkFhAM0d0nADNG6SChdjN06zB+cVqCF0XTS186ntmFKQVwXVk2RcHmEA==",
+      "path": "fslexyacc.runtime/10.0.0",
+      "hashPath": "fslexyacc.runtime.10.0.0.nupkg.sha512"
     }
   }
 }

@@ -48,8 +48,8 @@ let rec evalS (act: Act) (memory: Memory) =
     | Ass (var, a) -> setVar var (evalA a memory) memory
     | ArrAss (var, index, a) -> setVar (var + "[" + string (evalA index memory) + "]") (evalA a memory) memory
     | DoNothing -> memory
-    | Pred b when evalB b memory -> memory
-    | Pred _ -> Undefined
+    | Predicate b when evalB b memory -> memory
+    | Predicate _ -> Undefined
 
 let rec evalC (command: Command) (memory: Memory) =
     match command with
@@ -57,8 +57,6 @@ let rec evalC (command: Command) (memory: Memory) =
     | ArrayAssign (var, index, a) -> setVar (var + "[" + string (evalA index memory) + "]") (evalA a memory) memory
     | Chain (c1, c2) -> evalC c2 (evalC c1 memory)
     | Skip -> memory
-    | Break -> memory
-    | Continue -> memory
     | If gc -> evalGC gc memory
     | Do gc ->
         match evalGC gc memory with
@@ -70,3 +68,37 @@ and evalGC (gc: GuardCommand) (memory: Memory) =
     | Then (b, c) when evalB b memory -> evalC c memory
     | Then _ -> Undefined
     | Else (gc1, gc2) -> (evalGC gc1 memory) <|> (evalGC gc2 memory)
+
+let rec evalP (f: Pred) (memory: Memory) (vMemory: VirtualMemory) =
+    match f with
+    | F b -> b
+    | Conjuntion (f1, f2) -> evalP f1 memory vMemory && evalP f2 memory vMemory
+    | Disjunction (f1, f2) -> evalP f1 memory vMemory || evalP f2 memory vMemory
+    | Neg f1 -> not (evalP f1 memory vMemory)
+    | Constraint (f1, f2) -> evalP f1 memory vMemory && evalP f2 memory vMemory
+    | Exists (x, f1) ->
+        match Map.tryFind x vMemory with
+        | None -> false
+        | Some _ -> evalP f1 memory vMemory
+    | Forall (x, f1) ->
+        match Map.tryFind x vMemory with
+        | None -> false
+        | Some _ -> evalP f1 memory vMemory
+    | Equality (e1, e2) -> evalE e1 memory vMemory = evalE e2 memory vMemory
+    | PredMap (p, es) -> p es
+
+and evalE (e: Expr) (memory: Memory) (vMemory: VirtualMemory) =
+    match e with
+    | Concrete x -> getVar x memory
+    | Virtual x -> Map.find x vMemory
+    | AddExpr (e1, e2) -> evalE e1 memory vMemory + evalE e2 memory vMemory
+    | SubExpr (e1, e2) -> evalE e1 memory vMemory - evalE e2 memory vMemory
+    | TimesExpr (e1, e2) -> evalE e1 memory vMemory * evalE e2 memory vMemory
+    | DivExpr (e1, e2) -> evalE e1 memory vMemory / evalE e2 memory vMemory
+    | Map (f, es) -> f es
+
+let getPred (node: Q) : Pred = failwith ""
+
+let rec isCorrectPred (p: Pred) (Edge (node1, act, node2)) (memory: Memory) (vMemory: VirtualMemory) =
+    let memory' = evalS act memory
+    evalP (getPred node1) memory vMemory && evalP (getPred node2) memory' vMemory

@@ -26,41 +26,39 @@ let rec showA =
 let rec showB =
     function
     | B x -> string x
-    | BitAnd (x, y) -> showB x + "&" + showB y
-    | BitOr (x, y) -> showB x + "|" + showB y
-    | And (x, y) -> showB x + "&&" + showB y
-    | Or (x, y) -> showB x + "||" + showB y
+    | BitAnd (x, y) -> showB x + " & " + showB y
+    | BitOr (x, y) -> showB x + " | " + showB y
+    | And (x, y) -> showB x + " && " + showB y
+    | Or (x, y) -> showB x + " || " + showB y
     | Not x -> "!(" + showB x + ")"
-    | Eq (x, y) -> showA x + "=" + showA y
-    | NEq (x, y) -> showA x + "!=" + showA y
-    | Ls (x, y) -> showA x + "<" + showA y
-    | LsEq (x, y) -> showA x + "<=" + showA y
-    | Gr (x, y) -> showA x + ">" + showA y
-    | GrEq (x, y) -> showA x + ">=" + showA y
+    | Eq (x, y) -> showA x + " = " + showA y
+    | NEq (x, y) -> showA x + " != " + showA y
+    | Ls (x, y) -> showA x + " < " + showA y
+    | LsEq (x, y) -> showA x + " <= " + showA y
+    | Gr (x, y) -> showA x + " > " + showA y
+    | GrEq (x, y) -> showA x + " >= " + showA y
     | ParanB x -> "(" + showB x + ")"
 
 let rec showAct =
     function
-    | Ass (x, a) -> x + ":=" + showA a
-    | ArrAss (x, a, b) -> x + "[" + showA a + "]:=" + showA b
-    | Pred x -> showB x
+    | Ass (x, a) -> x + " := " + showA a
+    | ArrAss (x, a, b) -> x + "[" + showA a + " ]:= " + showA b
+    | Predicate x -> showB x
     | DoNothing -> "skip"
 
 let rec showC command =
     match command with
     | Assign (var, a) -> var + " := " + showA a
-    | ArrayAssign (var, index, a) -> var + "[ " + showA index + " ]:=" + showA a
-    | Chain (c1, c2) -> showC c1 + "; " + showC c2
-    | If gc -> "if " + showGC gc + " fi"
-    | Do gc -> "do " + showGC gc + " od"
+    | ArrayAssign (var, index, a) -> var + "[ " + showA index + " ] := " + showA a
+    | Chain (c1, c2) -> showC c1 + ";\n" + showC c2
+    | If gc -> "if " + showGC gc + "\nfi"
+    | Do gc -> "do " + showGC gc + "\nod"
     | Skip -> "skip"
-    | Break -> "break"
-    | Continue -> "continue"
 
 and showGC (gc: GuardCommand) =
     match gc with
-    | Then (b, c) -> showB b + " -> " + showC c
-    | Else (gc1, gc2) -> showGC gc1 + " [] " + showGC gc2
+    | Then (b, c) -> showB b + " ->\n\t" + showC c
+    | Else (gc1, gc2) -> showGC gc1 + "\n[] " + showGC gc2
 
 
 
