@@ -13,7 +13,7 @@ let rec doneB =
     | Else (gc1, gc2) -> And(doneB gc1, doneB gc2)
 
 // Non-deterministic  Program Graph
-let rec edges (node1: Q) (node2: Q) index (command: Command) =
+let rec edges (node1: Q) (node2: Q) index (command: Command) : PG =
     match command with
     | Assign (var, a) -> [ Edge(node1, Ass(var, a), node2) ]
     | ArrayAssign (var, index, a) -> [ Edge(node1, ArrAss(var, index, a), node2) ]
@@ -30,12 +30,12 @@ and edgesG (node1: Q) (node2: Q) index (gc: GuardCommand) : PG =
     | Then (b, c) -> Edge(node1, Predicate b, Node index) :: (edges (Node index) node2 (index * 2) c)
     | Else (gc1, gc2) -> (edgesG node1 node2 (2 * index) gc1) @ (edgesG node1 node2 (2 * index + 1) gc2)
 
-let commandtoPG (c: Command) = makePG (edges InitNode FinalNode 1 c)
+let commandtoPG (c: Command) = edges InitNode FinalNode 1 c
 
 // ---------------------------------------------------------- //
 
 // Deterministic Program graph
-let rec edgesD (node1: Q) (node2: Q) index (command: Command) =
+let rec edgesD (node1: Q) (node2: Q) index (command: Command) : PG =
     match command with
     | Assign (var, a) -> [ Edge(node1, Ass(var, a), node2) ]
     | ArrayAssign (var, index, a) -> [ Edge(node1, ArrAss(var, index, a), node2) ]
@@ -58,4 +58,4 @@ and edgesGD (node1: Q) (node2: Q) index (gc: GuardCommand) (d: Bexpr) : (PG * Be
         let (e2, d2) = edgesGD node1 node2 (2 * index + 1) gc2 d1
         (e1 @ e2, d2)
 
-let commandtoDeterPG (c: Command) = makePG (edgesD InitNode FinalNode 1 c)
+let commandtoDeterPG (c: Command) = edgesD InitNode FinalNode 1 c

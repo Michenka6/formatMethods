@@ -18,7 +18,7 @@ let rec stepsList (config: Config) (program: PG) =
         |> List.collect (fun (act, c) -> List.map (append (Step(config, act, c))) (stepsList c program))
 
 // Determines if a PG is stuck, deterministic or non-deterministic
-let executionSeq (program: PG) (memory: Memory) =
+let executionSeq (program: PG) (memory: Memory) : ExecResult =
     let steps = stepsList (Config(InitNode, memory)) program
 
     match steps with

@@ -14,13 +14,13 @@ let rec showA =
     function
     | N x -> string x
     | Var x -> x
-    | Arr (x, y) -> x + "[" + showA y + "]"
-    | Add (x, y) -> showA x + "+" + showA y
-    | Sub (x, y) -> showA x + "-" + showA y
-    | Times (x, y) -> showA x + "*" + showA y
-    | Div (x, y) -> showA x + "/" + showA y
+    | Arr (x, y) -> x + "[ " + showA y + " ]"
+    | Add (x, y) -> showA x + " + " + showA y
+    | Sub (x, y) -> showA x + " - " + showA y
+    | Times (x, y) -> showA x + " * " + showA y
+    | Div (x, y) -> showA x + " / " + showA y
     | Minus x -> "-" + showA x
-    | Power (x, y) -> showA x + "^" + showA y
+    | Power (x, y) -> showA x + " ^ " + showA y
     | ParanA x -> "(" + showA x + ")"
 
 let rec showB =
@@ -42,7 +42,7 @@ let rec showB =
 let rec showAct =
     function
     | Ass (x, a) -> x + " := " + showA a
-    | ArrAss (x, a, b) -> x + "[" + showA a + " ]:= " + showA b
+    | ArrAss (x, a, b) -> x + "[ " + showA a + " ]:= " + showA b
     | Predicate x -> showB x
     | DoNothing -> "skip"
 
@@ -71,7 +71,7 @@ let showMemory =
     function
     | Undefined -> "UNDEFINED MEMORY"
     | Mem mp ->
-        ("", mp)
+        ("MEMORY :", mp)
         ||> Map.fold (fun acc key value -> acc + " | " + key + " : " + string value)
 
 let rec showConfig (Config (q, mem)) =
