@@ -53,7 +53,7 @@ type A = Aexpr -> Memory -> int
 // evalA : A
 
 type B = Bexpr -> Memory -> bool
-// eval : B
+// evalB : B
 
 type Config = Config of Q * Memory
 
@@ -63,8 +63,6 @@ type ExecResult =
     | Stuck
     | Deter of Step list
     | NonDeter of Step list list
-
-type Exception = string
 
 type GuardCommand =
     | Then of Bexpr * Command

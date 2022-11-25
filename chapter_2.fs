@@ -111,11 +111,13 @@ let traverseArrayMemory: Memory =
               ("A[9]", 09) ]
     )
 
+// Extract the Bexpr from a GuardCommand
 let rec doneB =
     function
     | Then (b, c) -> Not b
     | Else (gc1, gc2) -> And(doneB gc1, doneB gc2)
 
+// Non-deterministic  Program Graph
 let rec edges (node1: Q) (node2: Q) index (command: Command) (nodeB: Q) (nodeC: Q) =
     match command with
     | Assign (var, a) -> [ Edge(node1, Ass(var, a), node2) ]
@@ -144,6 +146,7 @@ let commandtoPG (c: Command) =
 
 // ---------------------------------------------------------- //
 
+// Deterministic Program graph
 let rec edgesD (node1: Q) (node2: Q) index (command: Command) (nodeB: Q) (nodeC: Q) =
     match command with
     | Assign (var, a) -> [ Edge(node1, Ass(var, a), node2) ]
