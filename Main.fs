@@ -19,16 +19,16 @@ let inputtoCommand (input: string) : Command =
 
 [<EntryPoint>]
 let main args =
-    printfn "%s" (showC (inputtoCommand gcdInput))
+    let command = inputtoCommand gcdInput
+
+    if args = [||] then
+        commandtoPG command
+
+    for arg in args do
+        match arg with
+        | "-d" -> commandtoDeterPG command
+        | _ -> ()
 
 
 
-
-    // printfn "%A" (Undefined <|> (Mem Map.empty))
-
-    // commandtoDeterPG traverseArrayCommand
-    // makePG bubbleSort
-
-    // printfn "%s" (showExecResult (executionSeq bitLevel bitLevelMemory))
-    // printfn "%s" (string (isDeterministic nonDeter nonDeterMemory))
     0
