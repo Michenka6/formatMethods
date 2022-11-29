@@ -12,9 +12,6 @@
     <Compile Include="Input.fs" />
     <Compile Include="Eval.fs" />
     <Compile Include="Show.fs" />
-    <Compile Include="Chapter_1.fs" />
-    <Compile Include="Chapter_2.fs" />
-    <Compile Include="Chapter_3.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
   <ItemGroup>

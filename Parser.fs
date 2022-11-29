@@ -645,7 +645,7 @@ let _fsyacc_reductions ()  =    [|
                 (
                    (
 # 91 "Parser.fsy"
-                                                            Skip                  
+                                                            SkipGC                  
                    )
 # 91 "Parser.fsy"
                  : Command));

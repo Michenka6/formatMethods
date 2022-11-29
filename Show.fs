@@ -44,7 +44,7 @@ let rec showAct =
     | Ass (x, a) -> x + " := " + showA a
     | ArrAss (x, a, b) -> x + "[ " + showA a + " ]:= " + showA b
     | Predicate x -> showB x
-    | DoNothing -> "skip"
+    | Skip -> "skip"
 
 let rec showC command =
     match command with
@@ -53,7 +53,7 @@ let rec showC command =
     | Chain (c1, c2) -> showC c1 + ";\n" + showC c2
     | If gc -> "if " + showGC gc + "\nfi"
     | Do gc -> "do " + showGC gc + "\nod"
-    | Skip -> "skip"
+    | SkipGC -> "skip"
 
 and showGC (gc: GuardCommand) =
     match gc with
@@ -62,33 +62,25 @@ and showGC (gc: GuardCommand) =
 
 
 
-let showEdge (Edge (q1, act, q2)) =
+let showEdge (q1, act, q2) =
     showQ q1 + " -> " + showQ q2 + " [label = \"" + showAct act + "\"];"
 
 let showPG = List.map showEdge >> String.concat "\n"
 
 let showMemory =
     function
-    | Undefined -> "UNDEFINED MEMORY"
-    | Mem mp ->
+    | None -> "UNDEFINED MEMORY"
+    | Some mp ->
         ("MEMORY :", mp)
         ||> Map.fold (fun acc key value -> acc + " | " + key + " : " + string value)
 
-let rec showConfig (Config (q, mem)) =
+let rec showConfig (q, mem) =
     "<" + showQ q + " ; " + showMemory mem + ">"
 
-let rec showStep (Step (c1, act, c2)) =
+let rec showStep (c1, act, c2) =
     showConfig c1 + " == " + showAct act + " => " + showConfig c2 + "\n"
 
-let rec showExecResult =
-    function
-    | Stuck -> "\nPROGRAM STUCK!!!\n"
-    | Deter ls -> "\nDETERMINISTIC\n" + (List.map showStep >> String.concat "\n") ls
-    | NonDeter ls ->
-        let steps = List.map (List.map showStep >> String.concat "\n") ls
 
-        "\nNON-DETERMINISTIC\n"
-        + String.concat "----------------------------------------------\n" steps
 
 let rec makePG program =
     let graphTemplate =

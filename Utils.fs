@@ -16,11 +16,7 @@ let rec (|||) (b1: bool) (b2: bool) =
     | (false, true) -> true
     | (false, false) -> false
 
-let curry f a b = f (a, b)
-
-let uncurry f (a, b) = f a b
-
-let append x xs = x :: xs
+let prepend x xs = x :: xs
 
 // List.zip implementation for lists of unequal length
 let rec zip (xs: 'a list) (ys: 'b list) : ('a * 'b) list =
@@ -32,18 +28,21 @@ let rec zip (xs: 'a list) (ys: 'b list) : ('a * 'b) list =
 
 // Zip two lists with applying a function on the tuple, a very good way to make a new list out of two
 let zipWith (f: ('a -> 'b -> 'c)) (xs: 'a list) (ys: 'b list) =
-    (xs, ys) ||> zip |> List.map (uncurry f)
+    (xs, ys) ||> zip |> List.map (fun (x, y) -> f x y)
 
 // Filter two lists by a predicate onto the first one
-let filter2 (p: ('a -> bool)) (xs: 'a list) (ys: 'b list) : ('a * 'b) list =
+let filter2a (p: ('a -> bool)) (xs: 'a list) (ys: 'b list) : ('a * 'b) list =
     (xs, ys) ||> zip |> List.filter (fst >> p)
+
+let filter2b (p: ('b -> bool)) (xs: 'a list) (ys: 'b list) : ('a * 'b) list =
+    (xs, ys) ||> zip |> List.filter (snd >> p)
 
 // Filter a list by a predicate and then map the new list
 let mapFilter (f: ('a -> 'b)) (p: ('a -> bool)) (ls: 'a list) : 'b list = ls |> List.filter p |> List.map f
 
 // FIlter the two lists by a predicate on the first one and then map it
 let mapFilter2 (p: ('a -> bool)) (f: ('a -> 'b -> 'c)) (xs: 'a list) (ys: 'b list) : 'c list =
-    (xs, ys) ||> filter2 p |> List.map (uncurry f)
+    (xs, ys) ||> filter2a p |> List.map (fun (x, y) -> f x y)
 
 // Check if all elements are true given predicaste
 let all (p: ('a -> bool)) (ls: 'a list) : bool =
@@ -61,10 +60,50 @@ let mapGroup (p: ('a -> 'k)) (f: ('a list -> 'b)) (ls: 'a list) : 'b list =
 let checkForEach (p: ('a -> 'a list -> bool)) (ls: 'a list) =
     List.forall (fun x -> (x, List.filter ((<>) x) ls) ||> p) ls
 
-// Implementation of Alternative for Memory
-let inline (<|>) (mem1: Memory) (mem2: Memory) =
-    match mem1, mem2 with
-    | Undefined, Undefined -> Undefined
-    | Undefined, (Mem x) -> Mem x
-    | (Mem x), Undefined -> Mem x
-    | (Mem x), (Mem y) -> Mem x
+let inline (<&>) (f: ('a -> 'b)) (a: 'a option) = Option.map f a
+
+let inline (<*>) (f: ('a -> 'b) option) (a: 'a option) : 'b option =
+    match f with
+    | None -> None
+    | Some f' -> f' <&> a
+
+let inline (>>=) (a: 'a option) (f: ('a -> 'b option)) =
+    match a with
+    | None -> None
+    | Some x -> f x
+
+let inline (>=>) (f1: ('a -> 'b option)) (f2: ('b -> 'c option)) : ('a -> 'c option) = fun x -> f1 x >>= f2
+
+let join = Option.flatten
+
+let inline (<|>) a b =
+    match a, b with
+    | None, None -> None
+    | Some x, _ -> Some x
+    | None, Some x -> Some x
+
+let rec sequence (ls: ('a option) list) : ('a list) option =
+    match ls with
+    | [] -> Some []
+    | None :: tail -> sequence tail
+    | Some (x) :: tail -> prepend x <&> sequence tail
+
+let some x =
+    function
+    | None -> x
+    | Some a -> a
+
+let isSome =
+    function
+    | None -> false
+    | _ -> true
+
+let isNone =
+    function
+    | None -> true
+    | _ -> false
+
+let fromSome =
+    function
+    | None -> failwith "Can't access a None"
+    | Some a -> a

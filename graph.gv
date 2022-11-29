@@ -2,10 +2,8 @@ digraph program_graph {rankdir=LR;
 node [shape = circle]; q▷;
 node [shape = circle]; q◀;
 node [shape = circle]
-q▷ -> q◀ [label = "!(x != y)"];
-q▷ -> q1 [label = "x != y"];
-q1 -> q▷ [label = "!(x < y) && !(x > y)"];
-q1 -> q4 [label = "x < y"];
-q4 -> q▷ [label = "y := y-x"];
-q1 -> q5 [label = "x > y"];
-q5 -> q▷ [label = "x := x-y"];}
+q▷ -> q1 [label = "y := 1"];
+q1 -> q◀ [label = "!(x > 0)"];
+q1 -> q3 [label = "x > 0"];
+q3 -> q6 [label = "y := y * 2"];
+q6 -> q1 [label = "x := x - 1"];}

@@ -36,33 +36,26 @@ type Act =
     | Ass of string * Aexpr
     | ArrAss of string * Aexpr * Aexpr
     | Predicate of Bexpr
-    | DoNothing
+    | Skip
 
-type E = Edge of Q * Act * Q
+type Edge = Q * Act * Q
 
-type PG = E list
+type PG = Edge list
 
-type Memory =
-    | Undefined
-    | Mem of Map<string, int>
+type Memory = Map<string, int>
 
-type S = Act -> Memory -> Memory
+type Sem = Act -> Memory -> Memory option
 // evalS : S
 
-type A = Aexpr -> Memory -> int
+type A = Aexpr -> Memory -> int option
 // evalA : A
 
-type B = Bexpr -> Memory -> bool
+type B = Bexpr -> Memory -> bool option
 // evalB : B
 
-type Config = Config of Q * Memory
+type Config = Q * Memory
 
-type Step = Step of Config * Act * Config
-
-type ExecResult =
-    | Stuck
-    | Deter of Step list
-    | NonDeter of Step list list
+type Step = Config * Act * Config
 
 type GuardCommand =
     | Then of Bexpr * Command
@@ -74,30 +67,8 @@ and Command =
     | Chain of Command * Command
     | If of GuardCommand
     | Do of GuardCommand
-    | Skip
+    | SkipGC
 
-type Pred =
-    | F of bool
-    | Conjuntion of Pred * Pred
-    | Disjunction of Pred * Pred
-    | Neg of Pred
-    | Constraint of Pred * Pred
-    | Exists of string * Pred
-    | Forall of string * Pred
-    | Equality of Expr * Expr
-    | PredMap of (Expr list -> bool) * Expr list
-
-and Expr =
-    | Concrete of string
-    | Virtual of string
-    | AddExpr of Expr * Expr
-    | SubExpr of Expr * Expr
-    | TimesExpr of Expr * Expr
-    | DivExpr of Expr * Expr
-    | Map of (Expr list -> int) * Expr list
-
-type VirtualMemory = Map<string, int>
-
-type Define = Memory -> VirtualMemory -> Pred -> bool
-
-type P = Q -> Pred
+type ExecResult =
+    | Stuck of Step list
+    | Executed of Step list
